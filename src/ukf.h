@@ -4,6 +4,9 @@
 #include "Eigen/Dense"
 #include "measurement_package.h"
 
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
+
 class UKF {
  public:
   /**
@@ -41,6 +44,7 @@ class UKF {
    */
   void UpdateRadar(MeasurementPackage meas_package);
 
+  void UpdateMeanAndCovariance(int n_z, MatrixXd &S, MatrixXd &Zsig, VectorXd &z_pred, MeasurementPackage meas_package);
 
   // initially set to false, set to true in first call of ProcessMeasurement
   bool is_initialized_;
