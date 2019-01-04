@@ -8,6 +8,15 @@ set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
 set(sources src/ukf.cpp src/main.cpp src/tools.cpp)
 
+##########################################################################
+
+# my local search paths
+include_directories(_externalDeps/include)
+link_directories(_externalDeps/lib)
+
+##########################################################################
+
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
 include_directories(/usr/local/include)
 include_directories(/usr/local/opt/openssl/include)
