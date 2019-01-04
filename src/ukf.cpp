@@ -60,12 +60,19 @@ UKF::UKF() {
    */
 
   P_.setIdentity();
-  //std::cout << "P" << std::endl;
-  //std::cout << P_ << std::endl;
 
   n_x_ = 5;
   n_aug_ = 7;
   lambda_ = 3 - n_x_;
+
+  R_radar_ = MatrixXd(3, 3);
+  R_radar_ << std_radr_*std_radr_, 0, 0,
+              0, std_radphi_*std_radphi_, 0,
+              0, 0, std_radrd_*std_radrd_;
+
+  R_laser_ = MatrixXd(2, 2);
+  R_laser_ << std_laspx_*std_laspx_, 0,
+              0, std_laspy_*std_laspy_;
 
   is_initialized_ = false;
 }
@@ -325,11 +332,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
       S = S + ( weights_(i) * current_vec * current_vec.transpose() );
   }
 
-  MatrixXd R = MatrixXd(n_z,n_z);
-  R << std_laspx_*std_laspx_, 0,
-       0, std_laspy_*std_laspy_;
-
-  S = S + R;
+  S = S + R_laser_;
 
   //############# use incoming data ####################
 
@@ -394,12 +397,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
       S = S + ( weights_(i) * current_vec * current_vec.transpose() );
   }
 
-  MatrixXd R = MatrixXd(n_z,n_z);
-  R << std_radr_*std_radr_, 0, 0,
-       0, std_radphi_*std_radphi_, 0,
-       0, 0, std_radrd_*std_radrd_;
-
-  S = S + R;
+  S = S + R_radar_;
 
   //############# use incoming data ####################
 
