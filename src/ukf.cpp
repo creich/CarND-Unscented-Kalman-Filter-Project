@@ -24,11 +24,11 @@ UKF::UKF() {
 
   // Process noise standard deviation longitudinal acceleration in m/s^2
   //std_a_ = 30;
-  std_a_ = 3;
+  std_a_ = 2.3;
 
   // Process noise standard deviation yaw acceleration in rad/s^2
   //std_yawdd_ = 30;
-  std_yawdd_ = 3;
+  std_yawdd_ = 0.3;
   
   /**
    * DO NOT MODIFY measurement noise values below.
@@ -59,7 +59,10 @@ UKF::UKF() {
    * Hint: one or more values initialized above might be wildly off...
    */
 
+  // state covariance matrix
   P_.setIdentity();
+  P_(0, 0) = 0.23;
+  P_(1, 1) = 0.23;
 
   n_x_ = 5;
   n_aug_ = 7;
@@ -369,11 +372,15 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
       double psi     = Xsig_pred_.col(i)(3);
       double psi_dot = Xsig_pred_.col(i)(4);
 
+      double pxpy = px*px + py*py;
+      // check for division by 0
+      if( fabs(pxpy < 0.0001) )
+         pxpy += 0.01;
+
       // transform dadta and store it into Zsig
-      Zsig.col(i) << sqrt(px*px + py*py),
+      Zsig.col(i) << sqrt(pxpy),
                      atan2(py, px),
-                     //TODO check for division by 0 !!!
-                     (px * cos(psi) * v + py * sin(psi) * v) / sqrt(px*px + py*py);
+                     (px * cos(psi) * v + py * sin(psi) * v) / sqrt(pxpy);
   }
 
   // calculate mean predicted measurement
