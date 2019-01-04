@@ -74,6 +74,16 @@ UKF::UKF() {
   R_laser_ << std_laspx_*std_laspx_, 0,
               0, std_laspy_*std_laspy_;
 
+  // create vector for weights
+  weights_ = VectorXd(2*n_aug_+1);
+
+  // set weights
+  int n_a = 2 * n_aug_ + 1;
+  weights_(0) = lambda_ / (lambda_ + n_aug_);
+  for(int i=1; i<n_a; i++) {
+      weights_(i) = 1. / (2. * (lambda_ + n_aug_));
+  }
+
   is_initialized_ = false;
 }
 
@@ -260,15 +270,7 @@ void UKF::Prediction(double delta_t) {
 
   //##############  predict mean and covariance  ###############
 
-  // create vector for weights
-  weights_ = VectorXd(2*n_aug_+1);
-
-  // set weights
   int n_a = 2 * n_aug_ + 1;
-  weights_(0) = lambda_ / (lambda_ + n_aug_);
-  for(int i=1; i<n_a; i++) {
-      weights_(i) = 1. / (2. * (lambda_ + n_aug_));
-  }
 
   // predict state mean
   x_.fill(0.0);
