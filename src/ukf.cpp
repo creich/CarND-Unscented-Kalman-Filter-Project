@@ -300,6 +300,10 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
   // create matrix for sigma points in measurement space
   MatrixXd Zsig = MatrixXd(n_z, 2 * n_aug_ + 1);
+  for (int i = 0; i < 2 * n_aug_ + 1; i++) {
+     Zsig(0, i) = Xsig_pred_(0, i);  //px
+     Zsig(1, i) = Xsig_pred_(1, i);  //py
+  }
 
   // mean predicted measurement
   VectorXd z_pred = VectorXd(n_z);
