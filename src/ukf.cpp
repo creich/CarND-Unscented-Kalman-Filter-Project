@@ -126,17 +126,17 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
                0.0,
                0.0,
                0.0;
-      }
+       }
 
-      time_us_ = meas_package.timestamp_;
+       time_us_ = meas_package.timestamp_;
 
-      // done initializing, no need to predict or update
-      is_initialized_ = true;
+       // done initializing, no need to predict or update
+       is_initialized_ = true;
 
-      return;
+       return;
    }
 
-   double delta_t = (time_us_ - meas_package.timestamp_) / 1000000.0;
+   double delta_t = (meas_package.timestamp_ - time_us_) / 1000000.0;
    time_us_ = meas_package.timestamp_;
 
    // predict
